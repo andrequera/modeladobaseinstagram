@@ -8,23 +8,45 @@ from eralchemy import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
+ 
+class Usuario(Base):
+    __tablename__ = 'usuario'
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    nombreusuario = Column(String(250))
+    nombre = Column(String(250))
+    apellido = Column(String(250))
+    email = Column(String(250))
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+class Seguidor(Base):
+    __tablename__ = 'seguidor'
+    id = Column(Integer, primary_key=True)   
+    user_from_id = Column(Integer, ForeignKey('usuario.id'))
+    user_to_id = Column(Integer, ForeignKey('usuario.id'))
+    usuario= relationship(Usuario)
+    
+class Post(Base):
+    __tablename__ = 'post'
+    id = Column(Integer, primary_key=True)    
+    user_id = Column(Integer, ForeignKey('usuario.id'))
+    usuario = relationship(Usuario)
+    
+class Comentario(Base):
+    __tablename__ = 'comentario'
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    texto_comentario = Column(String(250))
+    autor_id = Column(Integer, ForeignKey('usuario.id'))
+    usuario = relationship(Usuario)
+    post_id = Column(Integer, ForeignKey('post.id'))
+    post = relationship(Post)
+
+
+class Media(Base):
+    __tablename__ = 'media'
+    id = Column(Integer, primary_key=True)
+    tipo = Column(Integer)
+    post_id= Column(Integer, ForeignKey('post.id'))
+    post = relationship(Post)
+
 
     def to_dict(self):
         return {}
